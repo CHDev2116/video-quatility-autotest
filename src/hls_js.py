@@ -89,7 +89,7 @@ def run_test():
 
                     network_conditions = chrome_driver.get_network_conditions()
 
-                    def change_network_records():
+                    def network_change_records():
                         file = open("results/network_conditions_for_hls.js.html", "a")
                         file.write("<div>current time: </div>")
                         file.write("\n")
@@ -105,7 +105,7 @@ def run_test():
                         file.write("\n")
                         file.close()
 
-                    change_network_records()
+                    network_change_records()
 
             schedule.every(v.times).seconds.until(timedelta(seconds=v.total_time)).do(set_network_connections)
 
@@ -277,11 +277,12 @@ def run_test():
                 f.write(hls_js_bitrates_and_levels_html)
                 f.write("\n")
 
-            hls_js_network_conditions_html = ("<p><a href='network_conditions_for_hls.js.html'> "
-                                              "network conditions for hls.js</a></p>")
-            with open('results/results_for_hls.js.html', 'a') as f:
-                f.write(hls_js_network_conditions_html)
-                f.write("\n")
+            if v.possibility > 0:
+                hls_js_network_conditions_html = ("<p><a href='network_conditions_for_hls.js.html'> "
+                                                  "network conditions for hls.js</a></p>")
+                with open('results/results_for_hls.js.html', 'a') as f:
+                    f.write(hls_js_network_conditions_html)
+                    f.write("\n")
 
         send_req()
 
