@@ -87,6 +87,26 @@ def run_test():
                         download_throughput=random.randint(v.min_download, v.max_download),
                         upload_throughput=v.upload)
 
+                    network_conditions = chrome_driver.get_network_conditions()
+
+                    def change_network_records():
+                        file = open("results/network_conditions_for_dplayer.html", "a")
+                        file.write("<div>current time: </div>")
+                        file.write("\n")
+                        file.write(str(datetime.now(timezone.utc)))
+                        file.write("\n")
+                        file.write("<div>current rate: </div>")
+                        file.write("\n")
+                        file.write(str(change_rate))
+                        file.write("\n")
+                        file.write("<div>current network condition: </div>")
+                        file.write("\n")
+                        file.write(str(network_conditions))
+                        file.write("\n")
+                        file.close()
+
+                    change_network_records()
+
             schedule.every(v.times).seconds.until(timedelta(seconds=v.total_time)).do(set_network_connections)
 
             ax = []
@@ -255,6 +275,12 @@ def run_test():
                                                 "bitrates and levels for dplayer</a></p>")
             with open('results/results_for_dplayer.html', 'a') as f:
                 f.write(dplayer_bitrates_and_levels_html)
+                f.write("\n")
+
+            dplayer_network_conditions_html = ("<p><a href='network_conditions_for_dplayer.html'> "
+                                               "network conditions for dplayer</a></p>")
+            with open('results/results_for_dplayer.html', 'a') as f:
+                f.write(dplayer_network_conditions_html)
                 f.write("\n")
 
         send_req()

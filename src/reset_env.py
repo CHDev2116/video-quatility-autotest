@@ -21,6 +21,9 @@ filename18 = "results/video_quality_for_dplayer.html"
 filename19 = "results/bitrates_and_levels_for_video.js.html"
 filename20 = "results/bitrates_and_levels_for_hls.js.html"
 filename21 = "results/bitrates_and_levels_for_dplayer.html"
+filename22 = "results/network_conditions_for_video.js.html"
+filename23 = "results/network_conditions_for_hls.js.html"
+filename24 = "results/network_conditions_for_dplayer.html"
 
 
 def reset_env():
@@ -191,6 +194,30 @@ def reset_env():
             print("bitrates_and_levels_for_dplayer.html does not exist.")
 
     remove_file21_html()
+
+    def remove_file22_html():
+        if os.path.exists(filename22):
+            os.remove(filename22)
+        else:
+            print("network_conditions_for_video.js.html does not exist.")
+
+    remove_file22_html()
+
+    def remove_file23_html():
+        if os.path.exists(filename23):
+            os.remove(filename23)
+        else:
+            print("network_conditions_for_hls.js.html does not exist.")
+
+    remove_file23_html()
+
+    def remove_file24_html():
+        if os.path.exists(filename24):
+            os.remove(filename24)
+        else:
+            print("network_conditions_for_dplayer.html does not exist.")
+
+    remove_file24_html()
 
 
 if __name__ == '__main__':

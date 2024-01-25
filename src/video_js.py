@@ -80,12 +80,31 @@ def run_test():
             def set_network_connections():
                 change_rate = random.random()
                 if change_rate < v.possibility:
-                    print(change_rate)
                     chrome_driver.set_network_conditions(
                         offline=False,
                         latency=5,
                         download_throughput=random.randint(v.min_download, v.max_download),
                         upload_throughput=v.upload)
+
+                    network_conditions = chrome_driver.get_network_conditions()
+
+                    def change_network_records():
+                        file = open("results/network_conditions_for_video.js.html", "a")
+                        file.write("<div>current time: </div>")
+                        file.write("\n")
+                        file.write(str(datetime.now(timezone.utc)))
+                        file.write("\n")
+                        file.write("<div>current rate: </div>")
+                        file.write("\n")
+                        file.write(str(change_rate))
+                        file.write("\n")
+                        file.write("<div>current network condition: </div>")
+                        file.write("\n")
+                        file.write(str(network_conditions))
+                        file.write("\n")
+                        file.close()
+
+                    change_network_records()
 
             schedule.every(v.times).seconds.until(timedelta(seconds=v.total_time)).do(set_network_connections)
 
@@ -256,6 +275,12 @@ def run_test():
                                                  "bitrates and levels for video.js</a></p>")
             with open('results/results_for_video.js.html', 'a') as f:
                 f.write(video_js_bitrates_and_levels_html)
+                f.write("\n")
+
+            video_js_network_conditions_html = ("<p><a href='network_conditions_for_video.js.html'> "
+                                                "network conditions for video.js</a></p>")
+            with open('results/results_for_video.js.html', 'a') as f:
+                f.write(video_js_network_conditions_html)
                 f.write("\n")
 
         send_req()
