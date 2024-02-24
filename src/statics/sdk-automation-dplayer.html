@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://jsdelivr.fusioncdn.com/npm/dplayer@1.26.0/dist/DPlayer.min.js"></script>
+  <!-- Configuration might be different along with Stream. -->
+  <script src="https://jsdelivr.fusioncdn.com/npm/@mlytics/p2sp-sdk@latest/bundle/driver.min.js"></script>
+  <script src="https://jsdelivr.fusioncdn.com/npm/@mlytics/p2sp-sdk@latest/bundle/peripheral/player/dplayer-hls.min.js"></script>
+  <script src="./testtool.js"></script>
+</head>
+<body>
+  <div style="width: 800px; height: 640px">
+    <div id="video" style="width: 800px; height: 640px; background-color: black;"></div>
+  </div>
+  <script>
+    const params = new URL(window.location).searchParams;
+    const src = params.get('src');
+    const configURL = params.get('configURL');
+
+    const loadConfig = async () => {
+        await new Promise((resolve, reject) => {
+            try {
+                const element = document.createElement('script');
+                element.setAttribute('src', configURL);
+                element.addEventListener('load', () => {
+                    resolve();
+                });
+                element.addEventListener('error', () => {
+                    reject(new Error('Fail to load MLYSDK config.'));
+                });
+                document.getElementsByTagName('head')[0].appendChild(element);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    };
+
+    const loadPlayer = async () => {
+        const driver = mlysdk.driver.initialize({
+            server: {
+                host: {
+                    fqdn: "vsp.mlytics.co"
+                }
+            }
+        });
+        const adapter = driver.extensions.DPlayerHlsPlayerPlugin.create({
+            container: video,
+            autoplay: true,
+            controls: true,
+            video: {
+                url: src
+            },
+            hlsConfig: {
+                liveSyncDuration: 4,
+                liveMaxLatencyDuration: 8,
+                maxLiveSyncPlaybackRate: 1.1,
+                }
+        });
+        window.driver = driver;
+        window.adapter = adapter;
+
+        const player = adapter.player;
+
+        const element = player.video;
+        testTool.bindMedia(element);
+        const hls = adapter.protocol;
+        testTool.bindHLSEvents(hls);
+    };
+
+    Promise.resolve().then(async () => {
+        await loadConfig();
+    }).then(async () => {
+        await loadPlayer();
+    });
+  </script>
+</body>
+</html>
