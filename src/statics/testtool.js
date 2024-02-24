@@ -1,73 +1,93 @@
 (function () {
-    let logs = [];
-    let warns = [];
-    let startuptime = [];
+    let mediaEvents = [];
+    let hlsErrors = [];
+    let startupTimes = [];
     let waitingCount = 0;
     let seekingCount = 0;
-    let warnsCount = 0;
-    let latency = [];
+    let hlsErrorsCount = 0;
+    let latencies = [];
+    let bitrates = [];
+    let levels = [];
 
-    window.testTool = {    
+    window.testTool = {
         getWaitingCount() {
             return waitingCount;
         },
 
-        getLogs() {
-            return logs;
+        getMediaEvents() {
+            return mediaEvents;
         },
 
-        getStartupTime() {
-            return startuptime;
+        getStartupTimes() {
+            return startupTimes;
         },
 
-        getWarns() {
-            return warns;
+        getHlsErrors() {
+            return hlsErrors;
         },
 
-        getWarnsCount() {
-            return warnsCount;
+        getHlsErrorsCount() {
+            return hlsErrorsCount;
         },
 
-        clearWarns() {
-            warns = [];
-            return warns;
+        clearHlsErrors() {
+            hlsErrors = [];
+            return hlsErrors;
         },
 
         getSeekingCount() {
             return seekingCount;
         },
 
-        getLatency() {
-            return latency;
+        getLatencies() {
+            return latencies;
         },
 
-        clearLatency() {
-            latency = [];
-            return latency;
+        clearLatencies() {
+            latencies = [];
+            return latencies;
+        },
+
+        getBitrates() {
+            return bitrates;
+        },
+
+        clearBitrates() {
+            bitrates = [];
+            return bitrates;
+        },
+
+        getLevels() {
+            return levels;
+        },
+
+        clearLevels() {
+            levels = [];
+            return levels;
         },
 
 
         bindMedia(element) {
             element.addEventListener('waiting', () => {
                 console.log('waiting');
-                logs.push(['waiting', Date.now()]);
+                mediaEvents.push(['waiting', Date.now()]);
                 waitingCount++;
             });
             element.addEventListener('play', () => {
                 console.log('play');
-                startuptime.push(['play', Date.now()]);
+                startupTimes.push(['play', Date.now()]);
             });
             element.addEventListener('timeupdate', () => {
                 console.log('timeupdate');
-                logs.push(['timeupdate', Date.now()]);
+                mediaEvents.push(['timeupdate', Date.now()]);
             });
             element.addEventListener('playing', () => {
                 console.log('playing');
-                startuptime.push(['playing', Date.now()]);
+                startupTimes.push(['playing', Date.now()]);
             });
             element.addEventListener('seeking', () => {
                 console.log('seeking');
-                logs.push(['seeking', Date.now()]);
+                mediaEvents.push(['seeking', Date.now()]);
                 seekingCount++;
             });
         },
@@ -76,13 +96,21 @@
             const Hls = hls.constructor;
             hls.on(Hls.Events.ERROR, (_event, data) => {
                 console.warn(data.fatal, data.type, data.details);
-                warns.push([Date.now(), data.type, data.details]);
-                warnsCount++;
+                hlsErrors.push([Date.now(), data.type, data.details]);
+                hlsErrorsCount++;
+            });
+            hls.on(Hls.Events.LEVEL_SWITCHING, (_event, data) => {
+                console.warn(data);
+                bitrates.push([Date.now(), data.bitrate]);
+            });
+            hls.on(Hls.Events.LEVEL_SWITCHED, (_event, data) => {
+                console.warn(data);
+                levels.push([Date.now(), data.level]);
             });
             setInterval(() => {
-                latency.push([hls.latency, Date.now()]);
+                latencies.push([hls.latency, Date.now()]);
             }, 3000);
         }
-    }            
+    }
 
-})();    
+})();

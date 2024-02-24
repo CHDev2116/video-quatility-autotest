@@ -28,7 +28,7 @@ def run_test():
     chrome_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     chrome_driver.get(
         # f"https://cheryl1.mlytics.co/event-listener/v6/sdk-automation-videojs.html?src={v.src}&configURL={v.configURL}")
-        f"file://{os.path.dirname(__file__)}/statics/video-js.html?src={v.src}&configURL={v.configURL}")
+        f"file://{os.path.dirname(__file__)}/statics/sdk-automation-videojs.html?src={v.src}&configURL={v.configURL}")
     print(datetime.now())
     time.sleep(2)
 
