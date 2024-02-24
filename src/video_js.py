@@ -3,6 +3,7 @@ import random
 import schedule
 import speedtest
 import time
+import os
 
 from datetime import datetime, timedelta, timezone
 from selenium import webdriver
@@ -26,7 +27,8 @@ def run_test():
     # reset_env()
     chrome_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     chrome_driver.get(
-        "https://cheryl1.mlytics.co/event-listener/v6/sdk-automation-videojs.html?src=" + v.src + "&configURL=" + v.configURL)
+        # f"https://cheryl1.mlytics.co/event-listener/v6/sdk-automation-videojs.html?src={v.src}&configURL={v.configURL}")
+        f"file://{os.path.dirname(__file__)}/statics/video-js.html?src={v.src}&configURL={v.configURL}")
     print(datetime.now())
     time.sleep(2)
 
