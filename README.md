@@ -1,4 +1,4 @@
-# p2sp-sdk-test
+# Video-quality-autotest
 
 ## How to install
 - ```git clone git@github.com:CHDev2116/video-quatility-autotest.git```
